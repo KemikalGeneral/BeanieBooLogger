@@ -4,14 +4,16 @@ package com.endorphinapps.kemikal.beanieboologger;
  * Created by KeMiKaL on 20/09/2016.
  */
 
+/**
+ * Creates and adds all of the Beanies to the database,
+ * reading and displaying them in a GridView,
+ */
+
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -19,8 +21,8 @@ public class MainActivity extends AppCompatActivity {
 
     private GridView gridView;
     private MyArrayAdapter myArrayAdapter;
-    private MyCursorAdapter myCursorAdapter;
-    private DataSource dataSource;
+//    private MyCursorAdapter myCursorAdapter;
+//    private DataSource dataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +51,12 @@ public class MainActivity extends AppCompatActivity {
         Log.v("z! DB", list.toString());
     }
 
+    /** Find all Views **/
     private void findViews() {
         gridView = (GridView) findViewById(R.id.grid_view);
     }
 
+    /** Add all beanies to the database **/
     private void addAllBeanies(DBHelper db) {
         db.insert("Alpine Red Horns", R.drawable.alpine_red_horns);//Duplicated as the first one is missing???
         db.insert("AlpineRedHorns", R.drawable.alpine_red_horns);

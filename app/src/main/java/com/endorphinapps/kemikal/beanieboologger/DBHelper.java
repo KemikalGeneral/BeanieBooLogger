@@ -6,12 +6,24 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
 
 /**
  * Created by KeMiKaL on 29/09/2016.
+ */
+
+/**
+ * DataBase helper class that contains all the CRUD methods
+ **/
+ /** onCreate
+ * onUpgrade
+ * insert
+ * selectAll
+ * update
+ * deleteTable
+ * numberOfRows
+ * getDatabaseName
  */
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -28,6 +40,7 @@ public class DBHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    //Create and Set-Up database
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "( " +
@@ -37,12 +50,14 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_IS_OWNED + " INTEGER);");
     }
 
+    //OnUpgrade - Drop and Create table
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
 
+    //Insert new items with name and image
     public void insert(String name, Integer image) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -51,59 +66,64 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert(TABLE_NAME, null, values);
     }
 
+    //Retrieve all records from table into an ArrayList
     public ArrayList<Item> selectAllWithArray() {
         ArrayList<Item> beanies = new ArrayList();
         SQLiteDatabase db = getReadableDatabase();
         Cursor record = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
-
+        //Cycle through the cursor and create a new Beanie Items
         if (record.moveToFirst()) {
             while (record.moveToNext()) {
                 Item item = new Item();
                 item.set_id(Integer.parseInt(record.getString(0)));
                 item.setName(record.getString(1));
                 item.setImage(record.getInt(2));
+                //Add to array of Beanies
                 beanies.add(item);
             }
         }
         return beanies;
     }
 
+    //Update table 'isOwned' field 0=false 1=true
     public void update(String name, Integer isOwned) {
-        Log.v("z!", name);
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_IS_OWNED, isOwned);
         db.update(TABLE_NAME, values, COLUMN_NAME + " = " + name, null);
     }
 
-    public Cursor selectAllWithCursor() {
-        ArrayList<Item> beanies = new ArrayList();
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor record = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
-
-        if (record.moveToFirst()) {
-            while (record.moveToNext()) {
-                Item item = new Item();
-                item.set_id(Integer.parseInt(record.getString(0)));
-                item.setName(record.getString(1));
-                item.setImage(record.getInt(2));
-                beanies.add(item);
-            }
-        }
-        return record;
-    }
-
+    //Drop table
     public void deleteTable(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
     }
 
+    //Return the number of rown in the table
     public int numberOfRows() {
         SQLiteDatabase db = getReadableDatabase();
         int numRows = (int) DatabaseUtils.queryNumEntries(db, TABLE_NAME);
         return numRows;
     }
 
+    //Return the name of the database
     public String getDatabaseName() {
         return DATABASE_NAME;
     }
+
+//    public Cursor selectAllWithCursor() {
+//        ArrayList<Item> beanies = new ArrayList();
+//        SQLiteDatabase db = getReadableDatabase();
+//        Cursor record = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+//
+//        if (record.moveToFirst()) {
+//            while (record.moveToNext()) {
+//                Item item = new Item();
+//                item.set_id(Integer.parseInt(record.getString(0)));
+//                item.setName(record.getString(1));
+//                item.setImage(record.getInt(2));
+//                beanies.add(item);
+//            }
+//        }
+//        return record;
+//    }
 }

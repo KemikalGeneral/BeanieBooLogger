@@ -36,7 +36,7 @@ public class MyArrayAdapter extends android.widget.ArrayAdapter<Item> {
 //        TextView name = (TextView) convertView.findViewById(R.id.item_name);
 //        name.setText(item.getName());
 
-        //Onclick
+        //OnClick
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

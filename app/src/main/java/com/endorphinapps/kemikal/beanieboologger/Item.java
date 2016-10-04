@@ -4,6 +4,15 @@ package com.endorphinapps.kemikal.beanieboologger;
  * Created by KeMiKaL on 20/09/2016.
  */
 
+/**
+ * Item class containing a constructors, getters and setters
+ */
+/**
+ * id
+ * name
+ * image
+ */
+
 public class Item {
 
     int _id;
@@ -53,7 +62,8 @@ public class Item {
     @Override
     public String toString() {
         return "Item{" +
-                "name='" + name + '\'' +
+                "_id=" + _id +
+                ", name='" + name + '\'' +
                 ", image=" + image +
                 '}';
     }

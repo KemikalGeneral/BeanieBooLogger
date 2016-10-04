@@ -8,6 +8,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * Item detail, used when a beanie is selected from the main activity
+ * Displays the beanie name and image with options to add or delete
+ */
+
 public class ItemDetail extends AppCompatActivity {
 
     private TextView tv_itemTitle;
