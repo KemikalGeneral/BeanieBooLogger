@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Beanie Boo Logger</string>
 
-    <!--Item detail buttons-->
-    <string name="btn_add_beanie">Add this Beanie</string>
-    <string name="btn_delete_beanie">Remove this Beanie</string>
+    <string name="ty_beanie_boo_title">TY Beanie Boo\'s</string>
 </resources>

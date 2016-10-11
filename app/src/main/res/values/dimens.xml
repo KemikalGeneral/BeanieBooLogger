@@ -3,6 +3,13 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <!--Text Sizes-->
     <dimen name="text_size_normal">24sp</dimen>
     <dimen name="text_size_large">48sp</dimen>
+
+    <!--Padding-->
+    <dimen name="margin_padding_4">4dp</dimen>
+    <dimen name="margin_padding_8">8dp</dimen>
+    <dimen name="margin_padding_16">16dp</dimen>
+
 </resources>

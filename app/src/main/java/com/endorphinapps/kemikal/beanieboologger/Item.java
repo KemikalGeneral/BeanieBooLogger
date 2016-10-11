@@ -18,20 +18,11 @@ public class Item {
     int _id;
     private String name;
     private Integer image;
+    private String birthday;
+    private Integer isOwned;
 
     /** Constructors **/
     public Item() {
-    }
-
-    public Item(String name, Integer image) {
-        this.name = name;
-        this.image = image;
-    }
-
-    public Item(Integer _id, String name, Integer image) {
-        this._id = _id;
-        this.name= name;
-        this.image = image;
     }
 
     /** Getters and Setters **/
@@ -59,12 +50,30 @@ public class Item {
         this.image = image;
     }
 
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public Integer getIsOwned() {
+        return isOwned;
+    }
+
+    public void setIsOwned(Integer isOwned) {
+        this.isOwned = isOwned;
+    }
+
     @Override
     public String toString() {
         return "Item{" +
                 "_id=" + _id +
                 ", name='" + name + '\'' +
                 ", image=" + image +
+                ", birthday='" + birthday + '\'' +
+                ", isOwned=" + isOwned +
                 '}';
     }
 }

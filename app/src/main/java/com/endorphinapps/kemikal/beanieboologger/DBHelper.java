@@ -2,10 +2,12 @@ package com.endorphinapps.kemikal.beanieboologger;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -16,24 +18,16 @@ import java.util.ArrayList;
 /**
  * DataBase helper class that contains all the CRUD methods
  **/
- /** onCreate
- * onUpgrade
- * insert
- * selectAll
- * update
- * deleteTable
- * numberOfRows
- * getDatabaseName
- */
 
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "beanieDB";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String TABLE_NAME = "beanies";
     private static final String COLUMN_ID = "_id";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_IMAGE = "image";
+    private static final String COLUMN_BIRTHDAY = "birthday";
     private static final String COLUMN_IS_OWNED = "isOwned";
 
     public DBHelper(Context context) {
@@ -45,9 +39,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "( " +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_NAME + " VARCHAR, " +
+                COLUMN_NAME + " VARCHAR UNIQUE, " +
                 COLUMN_IMAGE + " INTEGER, " +
-                COLUMN_IS_OWNED + " INTEGER);");
+                COLUMN_BIRTHDAY + " VARCHAR, " +
+                COLUMN_IS_OWNED + " INT);");
     }
 
     //OnUpgrade - Drop and Create table
@@ -75,22 +70,46 @@ public class DBHelper extends SQLiteOpenHelper {
         if (record.moveToFirst()) {
             while (record.moveToNext()) {
                 Item item = new Item();
-                item.set_id(Integer.parseInt(record.getString(0)));
-                item.setName(record.getString(1));
-                item.setImage(record.getInt(2));
+                item.set_id(Integer.parseInt(record.getString(record.getColumnIndex(COLUMN_ID))));
+                item.setName(record.getString(record.getColumnIndex(COLUMN_NAME)));
+                item.setImage(record.getInt(record.getColumnIndex(COLUMN_IMAGE)));
+                item.setBirthday(record.getString(record.getColumnIndex(COLUMN_BIRTHDAY)));
+                item.setIsOwned(record.getInt(record.getColumnIndex(COLUMN_IS_OWNED)));
                 //Add to array of Beanies
                 beanies.add(item);
             }
         }
+        record.close();
         return beanies;
     }
 
+    //Return isOwned for use in the mainActivity
+    public int getIsOwned(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_ID + " = " + id, null);
+        int isOwned = 1;
+        if (cursor.moveToFirst()) {
+            isOwned = cursor.getInt(cursor.getColumnIndex(COLUMN_IS_OWNED));
+        }
+        cursor.close();
+
+        return isOwned;
+    }
+
     //Update table 'isOwned' field 0=false 1=true
-    public void update(String name, Integer isOwned) {
+    public void updateIsOwned(Integer id, int isOwned) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_IS_OWNED, isOwned);
-        db.update(TABLE_NAME, values, COLUMN_NAME + " = " + name, null);
+        db.update(TABLE_NAME, values, COLUMN_ID + " = " + id, null);
+    }
+
+    //Update table 'birthday' field 0=false 1=true
+    public void updateBirthday(Integer id, String birthday) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_BIRTHDAY, birthday);
+        db.update(TABLE_NAME, values, COLUMN_ID + " = " + id, null);
     }
 
     //Drop table
@@ -109,21 +128,4 @@ public class DBHelper extends SQLiteOpenHelper {
     public String getDatabaseName() {
         return DATABASE_NAME;
     }
-
-//    public Cursor selectAllWithCursor() {
-//        ArrayList<Item> beanies = new ArrayList();
-//        SQLiteDatabase db = getReadableDatabase();
-//        Cursor record = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
-//
-//        if (record.moveToFirst()) {
-//            while (record.moveToNext()) {
-//                Item item = new Item();
-//                item.set_id(Integer.parseInt(record.getString(0)));
-//                item.setName(record.getString(1));
-//                item.setImage(record.getInt(2));
-//                beanies.add(item);
-//            }
-//        }
-//        return record;
-//    }
 }

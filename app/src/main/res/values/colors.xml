@@ -4,6 +4,30 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
     <color name="green">#8BC34A</color>
     <color name="red">#F44336</color>
+    <color name="red_dk">#D32F2F</color>
+
+    <!--Owned BackgroundColours-->
+        <color name="owned_red">#FF5252</color>
+        <color name="owned_pink">#FF4081</color>
+        <color name="owned_purple">#E040FB</color>
+        <color name="owned_deep_purple">#7C4DFF</color>
+        <color name="owned_indigo">#536DFE</color>
+        <color name="owned_blue">#448AFF</color>
+        <color name="owned_light_blue">#40C4FF</color>
+        <color name="owned_cyan">#18FFFF</color>
+        <color name="owned_teal">#64FFDA</color>
+        <color name="owned_green">#69F0AE</color>
+        <color name="owned_light_green">#B2FF59</color>
+        <color name="owned_lime">#EEFF41</color>
+        <color name="owned_yellow">#FFFF00</color>
+        <color name="owned_amber">#FFD740</color>
+        <color name="owned_orange">#FFAB40</color>
+        <color name="owned_deep_orange">#FF6E40</color>
+        <color name="owned_brown">#8D6E63</color>
+        <color name="owned_grey">#BDBDBD</color>
+        <color name="owned_blue_grey">#78909C</color>
 </resources>

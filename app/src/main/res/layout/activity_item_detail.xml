@@ -4,29 +4,50 @@
     android:id="@+id/activity_item_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/beanie_page_background"
     android:orientation="vertical"
-    android:background="#ffffff"
+    android:padding="@dimen/margin_padding_4"
     tools:context="com.endorphinapps.kemikal.beanieboologger.ItemDetail">
 
+    <!--Beanie Name-->
     <TextView
         android:id="@+id/detail_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_large"
-        android:paddingTop="20dp"
         android:layout_gravity="center_horizontal"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_large"
+        android:layout_margin="@dimen/margin_padding_4"
+        android:shadowColor="@color/black"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="10"/>
 
+    <!--Beanie Birthday-->
+    <TextView
+        android:id="@+id/detail_birthday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:letterSpacing=".25"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_normal" />
+
+    <!--Beanie Image-->
     <ImageView
         android:id="@+id/detail_image"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_gravity="center_horizontal"
-        android:scaleType="fitCenter"
+        android:layout_margin="@dimen/margin_padding_4"
+        android:layout_weight="1"
         android:adjustViewBounds="true"
-        android:layout_weight="1"/>
+        android:background="@drawable/beanie_item_background_1"
+        android:padding="@dimen/margin_padding_8"
+        android:scaleType="fitCenter" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -34,14 +55,12 @@
         <Button
             android:id="@+id/add_beanie"
             style="@style/button_item_detail"
-            android:background="@color/green"
-            android:text="@string/btn_add_beanie"/>
+            android:background="@drawable/btn_add_beanie" />
 
         <Button
             android:id="@+id/delete_beanie"
             style="@style/button_item_detail"
-            android:background="@color/red"
-            android:text="@string/btn_delete_beanie"/>
+            android:background="@drawable/btn_delete_beanie" />
 
-    </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>

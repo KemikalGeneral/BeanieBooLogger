@@ -9,9 +9,17 @@
     </style>
 
     <style name="button_item_detail">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">96dp</item>
+        <item name="android:layout_height">96dp</item>
+        <item name="android:layout_margin">@dimen/margin_padding_4</item>
+        <item name="android:layout_centerHorizontal">true</item>
+    </style>
+
+    <style name="dialogue_theme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/red</item>    //Header colour
+        <item name="colorControlActivated">@color/red</item>    //Item background
+        <item name="android:textColorPrimary">@color/black</item>   //Text colour
+        <item name="android:windowBackground">@drawable/dialogue_style</item>
     </style>
 
 </resources>
