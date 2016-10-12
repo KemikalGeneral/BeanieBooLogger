@@ -2,9 +2,14 @@ package com.endorphinapps.kemikal.beanieboologger;
 
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -15,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Item detail, used when a beanie is selected from the main activity
@@ -122,8 +128,17 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
         Animation fade_in = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         iv_beanieImage.startAnimation(fade_in);
 
+        //Animated the respective add or delete button
+        Button btn_addDelete = null;
+        if (isOwned == 0) {
+            btn_addDelete = btn_addBeanie;
+        } else if (isOwned == 1) {
+            btn_addDelete = btn_deleteBeanie;
+        }
         Animation roll_in = AnimationUtils.loadAnimation(this, R.anim.roll_in);
-        btn_addBeanie.startAnimation(roll_in);
+        if (btn_addDelete != null) {
+            btn_addDelete.startAnimation(roll_in);
+        }
     }
 
     private void printDB() {
@@ -142,7 +157,7 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
     }
 
     //Add the chosen date to the DB (for the birthday)
-    //Implemented from DatePickerFragment Class
+    //Callback implemented from DatePickerFragment Class
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         //Create a new string from the date
@@ -155,7 +170,16 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
 
         updateDB_Birthday(date);
         dbHelper.updateIsOwned(beanieID, 1);
-    }
+
+        //Convert date set to millis for use with notifying when set
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, dayOfMonth, 22, 40);
+        long time = calendar.getTimeInMillis();
+        Log.v("z! TIME. Date in millis", String.valueOf(time));
+
+        //Create Notification to go off on the beanie's birthday
+        createNotification(time);
+        }
 
     //Update the birthday in the DB
     //Jump to the MainActivity
@@ -163,5 +187,33 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
         dbHelper.updateBirthday(beanieID, date);
 
         refreshMainActivity();
+    }
+
+    private void createNotification(long time) {
+        android.support.v4.app.NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(beanieImage)
+                        .setContentTitle("Beanie Notification")
+                        .setContentText("It's " + beanieName + "'s Birthday today!")
+                        .setDefaults(Notification.DEFAULT_ALL);
+
+        //Add an intent
+        Intent notificationIntent = new Intent(this, ItemDetail.class);
+        notificationIntent.putExtra("EXTRAS_ID", beanieID);
+        notificationIntent.putExtra("EXTRAS_NAME", beanieName);
+        notificationIntent.putExtra("EXTRAS_IMAGE", beanieImage);
+        notificationIntent.putExtra("EXTRAS_BIRTHDAY", beanieBirthday);
+        notificationIntent.putExtra("EXTRAS_IS_OWNED", isOwned);
+        //Add pending intent
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        //Launch activity on click of notification
+        builder.setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(001, builder.build());
     }
 }
