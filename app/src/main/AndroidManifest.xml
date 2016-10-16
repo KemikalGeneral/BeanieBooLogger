@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.endorphinapps.kemikal.beanieboologger">
+    package="com.endorphinapps.kemikal.beanieboologger"
+    android:installLocation="internalOnly">
+
+    <!--Permissions-->
+    <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />-->
+    <!--<uses-permission android:name="android.permission.READ_PHONE_STATE" />-->
+    <!--<uses-permission android:name="android.permission.WAKE_LOCK" />-->
+    <!--<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />-->
 
     <application
         android:allowBackup="true"
@@ -8,14 +15,29 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <receiver
+            android:name=".ItemDetail$notificationReceiver"
+            android:enabled="true"
+            android:exported="true">
+
+        </receiver>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ItemDetail"></activity>
+
+        <activity android:name=".ItemDetail" />
+        <!--<notificationReceiver android:name=".ItemDetail$notificationReceiver"-->
+            <!--android:enabled="true"-->
+            <!--android:exported="true" >-->
+            <!--<intent-filter >-->
+                <!--<action android:name="android.intent.action.BOOT_COMPLETED" />-->
+                <!--<action android:name="android.intent.action.QUICKBOOT_POWERON" />-->
+            <!--</intent-filter>-->
+        <!--</notificationReceiver>-->
     </application>
 
 </manifest>

@@ -1,12 +1,15 @@
 package com.endorphinapps.kemikal.beanieboologger;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
@@ -144,7 +147,7 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
     private void printDB() {
         Log.v("z!", "=====================================================");
         ArrayList list = dbHelper.selectAllWithArray();
-        for (Object element: list) {
+        for (Object element : list) {
             Log.v("z!", element.toString());
         }
     }
@@ -164,7 +167,7 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
         String date = String.valueOf(new StringBuilder()
                 .append(dayOfMonth)
                 .append("-")
-                .append(month+1)
+                .append(month + 1)
                 .append("-")
                 .append(year));
 
@@ -173,13 +176,19 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
 
         //Convert date set to millis for use with notifying when set
         Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, dayOfMonth, 22, 40);
-        long time = calendar.getTimeInMillis();
-        Log.v("z! TIME. Date in millis", String.valueOf(time));
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        calendar.set(Calendar.HOUR_OF_DAY, 17);
+        calendar.set(Calendar.MINUTE, 10);
+        calendar.set(Calendar.SECOND, 0);
+        long myTime = calendar.getTimeInMillis();
+
+        Log.v("z! Calendar", "" + calendar.getTime());
 
         //Create Notification to go off on the beanie's birthday
-        createNotification(time);
-        }
+        notificationAlarmManager(myTime);
+    }
 
     //Update the birthday in the DB
     //Jump to the MainActivity
@@ -189,31 +198,53 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
         refreshMainActivity();
     }
 
-    private void createNotification(long time) {
-        android.support.v4.app.NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(beanieImage)
-                        .setContentTitle("Beanie Notification")
-                        .setContentText("It's " + beanieName + "'s Birthday today!")
-                        .setDefaults(Notification.DEFAULT_ALL);
+    private void notificationAlarmManager(long myTime) {
 
-        //Add an intent
-        Intent notificationIntent = new Intent(this, ItemDetail.class);
-        notificationIntent.putExtra("EXTRAS_ID", beanieID);
-        notificationIntent.putExtra("EXTRAS_NAME", beanieName);
-        notificationIntent.putExtra("EXTRAS_IMAGE", beanieImage);
-        notificationIntent.putExtra("EXTRAS_BIRTHDAY", beanieBirthday);
-        notificationIntent.putExtra("EXTRAS_IS_OWNED", isOwned);
-        //Add pending intent
-        PendingIntent pendingIntent =
-                PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 
-        //Launch activity on click of notification
-        builder.setContentIntent(pendingIntent);
+        notificationReceiver notificationReceiver = new notificationReceiver();
+        IntentFilter filter = new IntentFilter("ALARM_ACTION");
+        registerReceiver(notificationReceiver, filter);
 
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        Intent intent = new Intent("ALARM_ACTION");
+        intent.putExtra("param", "My scheduled action");
+        PendingIntent operation = PendingIntent.getBroadcast(this, 0, intent, 0);
 
-        notificationManager.notify(001, builder.build());
+        alarmManager.set(AlarmManager.RTC_WAKEUP, myTime, operation);
+    }
+
+    /**
+     * BroadCast notificationReceiver Class
+     **/
+    public class notificationReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            android.support.v4.app.NotificationCompat.Builder builder =
+                    new NotificationCompat.Builder(context)
+                            .setSmallIcon(beanieImage)
+                            .setContentTitle("Beanie Notification")
+                            .setContentText("It's " + beanieName + "'s Birthday today!")
+                            .setDefaults(Notification.DEFAULT_ALL);
+
+            //Add an intent
+            Intent notificationIntent = new Intent(context, ItemDetail.class);
+            notificationIntent.putExtra("EXTRAS_ID", beanieID);
+            notificationIntent.putExtra("EXTRAS_NAME", beanieName);
+            notificationIntent.putExtra("EXTRAS_IMAGE", beanieImage);
+            notificationIntent.putExtra("EXTRAS_BIRTHDAY", beanieBirthday);
+            notificationIntent.putExtra("EXTRAS_IS_OWNED", isOwned);
+
+            //Add pending intent
+            PendingIntent pendingIntent =
+                    PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            //Launch activity on click of notification
+            builder.setContentIntent(pendingIntent);
+
+            NotificationManager notificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+            notificationManager.notify(001, builder.build());
+        }
     }
 }
