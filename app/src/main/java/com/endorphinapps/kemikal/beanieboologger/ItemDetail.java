@@ -179,9 +179,9 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        calendar.set(Calendar.HOUR_OF_DAY, 17);
-        calendar.set(Calendar.MINUTE, 10);
-        calendar.set(Calendar.SECOND, 0);
+//        calendar.set(Calendar.HOUR_OF_DAY, 17);
+//        calendar.set(Calendar.MINUTE, 10);
+        calendar.set(Calendar.SECOND, calendar.get(Calendar.SECOND) + 5);
         long myTime = calendar.getTimeInMillis();
 
         Log.v("z! Calendar", "" + calendar.getTime());
@@ -219,12 +219,16 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
     public class notificationReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            //Build the notification
             android.support.v4.app.NotificationCompat.Builder builder =
                     new NotificationCompat.Builder(context)
                             .setSmallIcon(beanieImage)
                             .setContentTitle("Beanie Notification")
                             .setContentText("It's " + beanieName + "'s Birthday today!")
+                            .setAutoCancel(true)
                             .setDefaults(Notification.DEFAULT_ALL);
+
+            Log.v("z! onReceive", "onReceive");
 
             //Add an intent
             Intent notificationIntent = new Intent(context, ItemDetail.class);
@@ -242,7 +246,7 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
             builder.setContentIntent(pendingIntent);
 
             NotificationManager notificationManager =
-                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
             notificationManager.notify(001, builder.build());
         }
