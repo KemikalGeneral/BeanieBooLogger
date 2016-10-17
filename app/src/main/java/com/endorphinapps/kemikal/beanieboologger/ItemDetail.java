@@ -175,6 +175,13 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
         dbHelper.updateIsOwned(beanieID, 1);
 
         //Convert date set to millis for use with notifying when set
+        /** At present this notification will not trigger on the time set.
+         * It will trigger immediately if set in the past (as per the default action of Android)
+         * It will trigger if I take the system time and add to it e.g. System.getTimeInMillis() + 3000
+         * It will trigger if I take my time and add to it e.g. myTime + 3000
+         * ...but not if the time is hard-coded, which it needs to be to trigger on a set time on the date picked.
+         * MyTime is being passed through to the notificationAlarmManager -> alarmManager.set()...
+         */
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
