@@ -186,9 +186,9 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-//        calendar.set(Calendar.HOUR_OF_DAY, 17);
-//        calendar.set(Calendar.MINUTE, 10);
-        calendar.set(Calendar.SECOND, calendar.get(Calendar.SECOND) + 5);
+        calendar.set(Calendar.HOUR_OF_DAY, 20);
+        calendar.set(Calendar.MINUTE, 26);
+//        calendar.set(Calendar.SECOND, calendar.get(Calendar.SECOND) + 10);
         long myTime = calendar.getTimeInMillis();
 
         Log.v("z! Calendar", "" + calendar.getTime());

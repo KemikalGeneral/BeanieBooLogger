@@ -9,12 +9,11 @@ package com.endorphinapps.kemikal.beanieboologger;
  * reading and displaying them in a GridView,
  */
 
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.GridView;
 
 import java.util.ArrayList;
@@ -23,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
 
     private GridView gridView;
     private MyArrayAdapter myArrayAdapter;
+    private boolean isDBInitialised;
+    private String sharedPrefsName = "BEANIE_PREFS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,30 +33,33 @@ public class MainActivity extends AppCompatActivity {
         //Find all views
         findViews();
 
-        //Setup Database from DBHelper Class
-        DBHelper db = new DBHelper(this);
-        SQLiteDatabase sqLiteDatabase = openOrCreateDatabase(db.getDatabaseName(), MODE_PRIVATE, null, null);
+        //Set isDBInitialised to value of shared prefs
+        SharedPreferences sharedPreferences = getSharedPreferences(sharedPrefsName, MODE_PRIVATE);
+        isDBInitialised = sharedPreferences.getBoolean("isDBInitialised", false);
+        Log.v("z!", "DB " + isDBInitialised);
 
+        //Setup Database from DBHelper Class
+        //Uses shared prefs to check boolean value
+        DBHelper db = new DBHelper(this);
+        if (!isDBInitialised) {
+            SQLiteDatabase sqLiteDatabase = openOrCreateDatabase(db.getDatabaseName(), MODE_PRIVATE, null, null);
 
 //        db.deleteTable(sqLiteDatabase);/** for testing **/
 
+            //Create Database
+            db.onCreate(sqLiteDatabase);
+            //Add all Beanies
+            addAllBeanies(db);
+        }
 
-        //Create Database
-        db.onCreate(sqLiteDatabase);
-        //Add all Beanies
-        addAllBeanies(db);
         //Select all Beanies
         ArrayList list = db.selectAllWithArray();
         //Setup and add adapter
         myArrayAdapter = new MyArrayAdapter(this);
         myArrayAdapter.addAll(db.selectAllWithArray());
         gridView.setAdapter(myArrayAdapter);
-
         //Print DB
         printDB(list);
-
-//        Animation rattle = AnimationUtils.loadAnimation(this, R.anim.rattle);
-//        gridView.startAnimation(rattle);
     }
 
     private void printDB(ArrayList list) {
@@ -69,9 +73,9 @@ public class MainActivity extends AppCompatActivity {
         gridView = (GridView) findViewById(R.id.grid_view);
     }
 
-    /** Add all beanies to the database **/
+    /** Add all beanies to the database
+     * set shared prefs to true so not to reinitionalise DB **/
     private void addAllBeanies(DBHelper db) {
-
         db.insert("Alpine Red Horns", R.drawable.alpine_red_horns);//Not showing in the GridView?
         db.insert("Aria the Multicoloured Owl", R.drawable.aria_multicoloured_owl);
         db.insert("Asia the White Tiger", R.drawable.asia_white_tiger);
@@ -238,5 +242,10 @@ public class MainActivity extends AppCompatActivity {
         db.insert("ZigZag the Zebra", R.drawable.zigzag_zebra);
         db.insert("Zippy the Green Turtle", R.drawable.zippy_green_turtle);
         db.insert("Zoe the Zebra", R.drawable.zoe_zebra);
+
+        //Set to true to stop initialising onCreate
+        SharedPreferences.Editor editor = getSharedPreferences(sharedPrefsName, MODE_PRIVATE).edit();
+        editor.putBoolean("isDBInitialised", true);
+        editor.apply();
     }
 }
