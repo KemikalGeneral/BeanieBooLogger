@@ -43,7 +43,7 @@
         android:layout_margin="@dimen/margin_padding_4"
         android:layout_weight="1"
         android:adjustViewBounds="true"
-        android:background="@drawable/beanie_item_background_1"
+        android:background="@drawable/beanie_item_background_not_owned"
         android:padding="@dimen/margin_padding_8"
         android:scaleType="fitCenter" />
 

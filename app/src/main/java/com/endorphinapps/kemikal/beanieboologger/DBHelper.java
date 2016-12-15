@@ -2,12 +2,10 @@ package com.endorphinapps.kemikal.beanieboologger;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -22,7 +20,7 @@ import java.util.ArrayList;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "beanieDB";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private static final String TABLE_NAME = "beanies";
     private static final String COLUMN_ID = "_id";
     private static final String COLUMN_NAME = "name";
@@ -43,6 +41,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_IMAGE + " INTEGER, " +
                 COLUMN_BIRTHDAY + " VARCHAR, " +
                 COLUMN_IS_OWNED + " INT);");
+        db.close();
     }
 
     //OnUpgrade - Drop and Create table
@@ -59,6 +58,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(COLUMN_NAME, name);
         values.put(COLUMN_IMAGE, image);
         db.insert(TABLE_NAME, null, values);
+        db.close();
     }
 
     //Retrieve all records from table into an ArrayList
@@ -80,6 +80,7 @@ public class DBHelper extends SQLiteOpenHelper {
             }
         }
         record.close();
+        db.close();
         return beanies;
     }
 
@@ -92,7 +93,7 @@ public class DBHelper extends SQLiteOpenHelper {
             isOwned = cursor.getInt(cursor.getColumnIndex(COLUMN_IS_OWNED));
         }
         cursor.close();
-
+        db.close();
         return isOwned;
     }
 
@@ -102,6 +103,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_IS_OWNED, isOwned);
         db.update(TABLE_NAME, values, COLUMN_ID + " = " + id, null);
+        db.close();
     }
 
     //Update table 'birthday' field 0=false 1=true
@@ -110,6 +112,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_BIRTHDAY, birthday);
         db.update(TABLE_NAME, values, COLUMN_ID + " = " + id, null);
+        db.close();
     }
 
     //Drop table
@@ -117,10 +120,11 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
     }
 
-    //Return the number of rown in the table
+    //Return the number of rows in the table
     public int numberOfRows() {
         SQLiteDatabase db = getReadableDatabase();
         int numRows = (int) DatabaseUtils.queryNumEntries(db, TABLE_NAME);
+        db.close();
         return numRows;
     }
 

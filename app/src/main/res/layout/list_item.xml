@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        android:background="@drawable/beanie_item_background_1"
+        android:background="@drawable/beanie_item_background_not_owned"
         android:padding="@dimen/margin_padding_8"
         app:srcCompat="@android:drawable/ic_menu_gallery" />
 
