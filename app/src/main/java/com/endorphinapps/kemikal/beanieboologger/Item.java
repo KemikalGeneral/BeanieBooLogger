@@ -3,16 +3,6 @@ package com.endorphinapps.kemikal.beanieboologger;
 /**
  * Created by KeMiKaL on 20/09/2016.
  */
-
-/**
- * Item class containing a constructors, getters and setters
- */
-/**
- * id
- * name
- * image
- */
-
 public class Item {
 
     int _id;
@@ -21,11 +11,9 @@ public class Item {
     private String birthday;
     private Integer isOwned;
 
-    /** Constructors **/
     public Item() {
     }
 
-    /** Getters and Setters **/
     public int get_id() {
         return _id;
     }

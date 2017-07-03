@@ -15,12 +15,16 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-public class MyArrayAdapter extends android.widget.ArrayAdapter<Item> {
+class MyArrayAdapter extends android.widget.ArrayAdapter<Item> {
 
     DBHelper db = new DBHelper(getContext());
     int isOwned = 0;
 
-    public MyArrayAdapter(Context context) {
+    /**
+     * Constructor for Adapter
+     * @param context
+     */
+    MyArrayAdapter(Context context) {
         super(context, 0);
     }
 
@@ -38,7 +42,6 @@ public class MyArrayAdapter extends android.widget.ArrayAdapter<Item> {
         image.setImageResource(item.getImage());
 
         //Set background colour if beanie isOwned
-//        DBHelper db = new DBHelper(getContext());
         isOwned = db.getIsOwned(item.get_id());
         if (isOwned == 0) {
             image.setBackgroundResource(R.drawable.beanie_item_background_not_owned);
@@ -110,8 +113,11 @@ public class MyArrayAdapter extends android.widget.ArrayAdapter<Item> {
         return convertView;
     }
 
-    //OnLoad animations
-    //'Rattle' images infinitely
+    /**
+     * Start onLoad animations
+     * 'Rattle' images indefinitely
+     * @param image
+     */
     private void onLoadAnimations(ImageView image) {
         Animation rattle = AnimationUtils.loadAnimation(getContext(), R.anim.rattle);
         image.startAnimation(rattle);

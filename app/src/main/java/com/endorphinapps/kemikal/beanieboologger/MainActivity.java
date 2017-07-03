@@ -62,12 +62,6 @@ public class MainActivity extends AppCompatActivity {
         printDB(list);
     }
 
-    private void printDB(ArrayList list) {
-        for (Object element : list) {
-            Log.v("z!", element.toString());
-        }
-    }
-
     /** Find all Views **/
     private void findViews() {
         gridView = (GridView) findViewById(R.id.grid_view);
@@ -248,4 +242,17 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean("isDBInitialised", true);
         editor.apply();
     }
+
+    /**
+     * Print DB to the console
+     * @param list
+     */
+    private void printDB(ArrayList list) {
+        for (Object element : list) {
+            Log.v("z!", element.toString());
+        }
+    }
+
 }
+
+

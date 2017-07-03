@@ -1,18 +1,10 @@
 package com.endorphinapps.kemikal.beanieboologger;
 
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -23,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * Item detail, used when a beanie is selected from the main activity
@@ -39,11 +30,11 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
     private Button btn_deleteBeanie;
 
     private DBHelper dbHelper;
-    private Integer beanieID;
-    private String beanieName;
-    private int beanieImage;
-    private String beanieBirthday;
-    private int isOwned;
+    private static Integer beanieID;
+    private static String beanieName;
+    private static int beanieImage;
+    private static String beanieBirthday;
+    private static int isOwned;
 
     //Start new Intent on back press so that a new MainActivity is created
     @Override
@@ -116,6 +107,9 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
         startOnLoadAnimations();
     }
 
+    /**
+     * Find all views by their Id's
+     */
     private void findViews() {
         tv_beanieName = (TextView) findViewById(R.id.detail_name);
         tv_beanieBirthday = (TextView) findViewById(R.id.detail_birthday);
@@ -124,6 +118,9 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
         btn_deleteBeanie = (Button) findViewById(R.id.delete_beanie);
     }
 
+    /**
+     * Start all loading animations
+     */
     private void startOnLoadAnimations() {
         Animation fade_in_text = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         tv_beanieName.startAnimation(fade_in_text);
@@ -144,6 +141,9 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
         }
     }
 
+    /**
+     * Print DB to the console
+     */
     private void printDB() {
         Log.v("z!", "=====================================================");
         ArrayList list = dbHelper.selectAllWithArray();
@@ -152,15 +152,23 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
         }
     }
 
-    //Simple intent to jump back and recreate the MainActivity
+    /**
+     * Simple intent to jump back and recreate the MainActivity
+     */
     private void refreshMainActivity() {
         Intent refresh = new Intent(ItemDetail.this, MainActivity.class);
         startActivity(refresh);
         finish();
     }
 
-    //Add the chosen date to the DB (for the birthday)
-    //Callback implemented from DatePickerFragment Class
+    /**
+     * Add the chosen date to the DB (for the birthday
+     * Callback implemented from DatePickerFragment Class
+     * @param view
+     * @param year
+     * @param month
+     * @param dayOfMonth
+     */
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         //Create a new string from the date
@@ -173,89 +181,16 @@ public class ItemDetail extends AppCompatActivity implements DatePickerDialog.On
 
         updateDB_Birthday(date);
         dbHelper.updateIsOwned(beanieID, 1);
-
-        //Convert date set to millis for use with notifying when set
-        /** At present this notification will not trigger on the time set.
-         * It will trigger immediately if set in the past (as per the default action of Android)
-         * It will trigger if I take the system time and add to it e.g. System.getTimeInMillis() + 3000
-         * It will trigger if I take my time and add to it e.g. myTime + 3000
-         * ...but not if the time is hard-coded, which it needs to be to trigger on a set time on the date picked.
-         * MyTime is being passed through to the notificationAlarmManager -> alarmManager.set()...
-         */
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        calendar.set(Calendar.HOUR_OF_DAY, 20);
-        calendar.set(Calendar.MINUTE, 26);
-//        calendar.set(Calendar.SECOND, calendar.get(Calendar.SECOND) + 10);
-        long myTime = calendar.getTimeInMillis();
-
-        Log.v("z! Calendar", "" + calendar.getTime());
-
-        //Create Notification to go off on the beanie's birthday
-        notificationAlarmManager(myTime);
     }
 
-    //Update the birthday in the DB
-    //Jump to the MainActivity
+    /**
+     * Update the birthday in the DB
+     * Jump to the MainActivity
+     * @param date
+     */
     private void updateDB_Birthday(String date) {
         dbHelper.updateBirthday(beanieID, date);
 
         refreshMainActivity();
-    }
-
-    private void notificationAlarmManager(long myTime) {
-
-        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-
-        notificationReceiver notificationReceiver = new notificationReceiver();
-        IntentFilter filter = new IntentFilter("ALARM_ACTION");
-        registerReceiver(notificationReceiver, filter);
-
-        Intent intent = new Intent("ALARM_ACTION");
-        intent.putExtra("param", "My scheduled action");
-        PendingIntent operation = PendingIntent.getBroadcast(this, 0, intent, 0);
-
-        alarmManager.set(AlarmManager.RTC_WAKEUP, myTime, operation);
-    }
-
-    /**
-     * BroadCast notificationReceiver Class
-     **/
-    public class notificationReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            //Build the notification
-            android.support.v4.app.NotificationCompat.Builder builder =
-                    new NotificationCompat.Builder(context)
-                            .setSmallIcon(beanieImage)
-                            .setContentTitle("Beanie Notification")
-                            .setContentText("It's " + beanieName + "'s Birthday today!")
-                            .setAutoCancel(true)
-                            .setDefaults(Notification.DEFAULT_ALL);
-
-            Log.v("z! onReceive", "onReceive");
-
-            //Add an intent
-            Intent notificationIntent = new Intent(context, ItemDetail.class);
-            notificationIntent.putExtra("EXTRAS_ID", beanieID);
-            notificationIntent.putExtra("EXTRAS_NAME", beanieName);
-            notificationIntent.putExtra("EXTRAS_IMAGE", beanieImage);
-            notificationIntent.putExtra("EXTRAS_BIRTHDAY", beanieBirthday);
-            notificationIntent.putExtra("EXTRAS_IS_OWNED", isOwned);
-
-            //Add pending intent
-            PendingIntent pendingIntent =
-                    PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            //Launch activity on click of notification
-            builder.setContentIntent(pendingIntent);
-
-            NotificationManager notificationManager =
-                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-            notificationManager.notify(001, builder.build());
-        }
     }
 }
