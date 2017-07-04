@@ -68,9 +68,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /** Add all beanies to the database
-     * set shared prefs to true so not to reinitionalise DB **/
+     * set shared prefs to true so not to reinitialise DB **/
     private void addAllBeanies(DBHelper db) {
-        db.insert("Alpine Red Horns", R.drawable.alpine_red_horns);//Not showing in the GridView?
+        db.insert("Alpine Red Horns", R.drawable.alpine_red_horns);
         db.insert("Aria the Multicoloured Owl", R.drawable.aria_multicoloured_owl);
         db.insert("Asia the White Tiger", R.drawable.asia_white_tiger);
         db.insert("Austin the Orange Eared Dog", R.drawable.austin_orange_ear_dog);

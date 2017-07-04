@@ -88,7 +88,7 @@ class DBHelper extends SQLiteOpenHelper {
         );
         //Cycle through the cursor and create a new Beanie Items
         if (record.moveToFirst()) {
-            while (record.moveToNext()) {
+            do {
                 Item item = new Item();
                 item.set_id(Integer.parseInt(record.getString(record.getColumnIndex(COLUMN_ID))));
                 item.setName(record.getString(record.getColumnIndex(COLUMN_NAME)));
@@ -97,7 +97,7 @@ class DBHelper extends SQLiteOpenHelper {
                 item.setIsOwned(record.getInt(record.getColumnIndex(COLUMN_IS_OWNED)));
                 //Add to array of Beanies
                 beanies.add(item);
-            }
+            } while (record.moveToNext());
         }
         record.close();
         db.close();
