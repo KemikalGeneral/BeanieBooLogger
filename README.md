@@ -1,4 +1,4 @@
-# BeanieBooLogger
+# Beanie Boo Logger
 
 Android application containing all (at time of writing) of the Ty Beanie Boo collection. 
 
